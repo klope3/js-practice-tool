@@ -1,0 +1,22 @@
+.exercise-work-container {
+    background-color: var(--code-editor-bg);
+    padding: 42px;
+    margin: 20px;
+    border-radius: 17px;
+    color: var(--code-editor-text-base);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.exercise-work-container input {
+    background-color: gray;
+    padding: 5px;
+    border-radius: 9px;
+    border: none;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: var(--font-size-20);
+}
+
+.exercise-input-line {
+    margin: 4px 0;
+}

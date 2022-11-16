@@ -1,0 +1,32 @@
+:root {
+    --font-size-14: 0.875rem;
+    --font-size-20: 1.25rem;
+
+    --code-editor-bg: rgb(36, 36, 36);
+    --code-editor-text-base: rgb(190, 190, 190);
+}
+
+.main {
+    max-width: 800px;
+    margin: auto;
+    font-size: var(--font-size-20);
+}
+
+.code-inline {
+    background-color: lightgray;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0 4px;
+}
+
+input {
+    width: 160px;
+    text-align: center;
+}
+
+.input-small {
+    width: 40px;
+}
+
+.input-micro {
+    width: 20px;
+}
