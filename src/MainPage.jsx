@@ -1,19 +1,17 @@
 import React from "react";
 import ExerciseArea from "./components/ExerciseArea/ExerciseArea";
-import { exerciseClasses } from "./components/exercises";
+import { chooseRandomExercise, exerciseClasses } from "./components/exercises";
 
 class MainPage extends React.Component {
     constructor() {
         super();
         this.state = {
             code: "",
-            exercise: this.chooseRandomExercise(),
+            exercise: chooseRandomExercise(),
             fields: {},
             correctAnswer: undefined,
         };
     }
-
-    chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.random() * exerciseClasses.length)]();
 
     handleFieldChange = event => {
         const { name: sender, value } = event.target;
@@ -58,12 +56,15 @@ class MainPage extends React.Component {
     }
 
     randomizeExercise = () => {
+        console.log("randomizing");
         this.setState(prevState => ({
             ...prevState,
-            exercise: this.chooseRandomExercise(),
+            exercise: chooseRandomExercise(),
             fields: {},
             correctAnswer: undefined,
         }));
+        console.log("Fields is now: ");
+        console.log(this.state.fields);
     }
 
     render() {

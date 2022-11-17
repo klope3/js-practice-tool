@@ -15,6 +15,39 @@ const numberVariables = [
     "edgeCount",
 ];
 
+const operations = [
+    {
+        symbol: "+",
+        resultWord: "sum",
+        doCalculation: (num1, num2) => num1 + num2,
+        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} plus {inlineCode(str2)}</span>,
+    },
+    {
+        symbol: "-",
+        resultWord: "difference",
+        doCalculation: (num1, num2) => num1 - num2,
+        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} minus {inlineCode(str2)}</span>,
+    },
+    {
+        symbol: "*",
+        resultWord: "product",
+        doCalculation: (num1, num2) => num1 * num2,
+        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} times {inlineCode(str2)}</span>,
+    },
+    {
+        symbol: "/",
+        resultWord: "quotient",
+        doCalculation: (num1, num2) => num1 / num2,
+        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} divided by {inlineCode(str2)}</span>,
+    },
+    {
+        symbol: "%",
+        resultWord: "remainder",
+        doCalculation: (num1, num2) => num1 % num2,
+        buildPhrase: (str1, str2) => <span>the remainder of {inlineCode(str1)} divided by {inlineCode(str2)}</span>,
+    },
+];
+
 const inlineCode = text => <span className="code-inline">{text}</span>
 const simpleFieldCheck = (fields, answers) => {
     if (Object.keys(fields).length === 0) return false;
@@ -24,22 +57,16 @@ const simpleFieldCheck = (fields, answers) => {
     }
     return true;
 }
-// const field = (name, value, onChange, classes) => <input type="text" value={value || ""} name={name} onChange={onChange} className={classes} />
-// const exerciseInputLine = content => <div className="exercise-input-line">{content}</div>
 
 export class AssignSingleVariableExercise {
     constructor() {
         this.var1 = getRandomFromArray(numberVariables);
         this.value1 = getRandomNumber();
-        this.answers = {
-            f00: this.var1,
-            f01: this.value1,
-        };
     }
 
-    checkAnswers = fields => simpleFieldCheck(fields, this.answers);
+    checkAnswers = fields => fields.line0field0 === this.var1 && fields.line0field1 == this.value1;
 
-    renderPromptArea = () => {
+    buildPromptArea = () => {
         return (
             <div>
                 Create a variable {inlineCode(this.var1)} and assign it the value {inlineCode(this.value1)}.
@@ -47,14 +74,9 @@ export class AssignSingleVariableExercise {
         );
     }
 
-    renderWorkArea = (fields, changeFieldFunction) => {
+    buildWorkArea = (fields, changeFieldFunction) => {
         const lines = [ "var ***** = ****" ];
-        return (
-            <div>
-                {buildWorkLines(lines, fields, changeFieldFunction)}
-                {/* {exerciseInputLine(<div>var {field("var1", fields.var1, changeFieldFunction)} = {field("value1", fields.value1, changeFieldFunction)};</div>)} */}
-            </div>
-        );
+        return buildWorkLines(lines, fields, changeFieldFunction);
     }
 }
 
@@ -68,22 +90,30 @@ export class AssignUseTwoVariablesExercise {
     }
 
     checkAnswers = fields => {
-        const { f00, f01, f10, f11, f20, f21, f22 } = fields;
+        const { 
+            line0field0,
+            line0field1,
+            line1field0,
+            line1field1,
+            line2field0,
+            line2field1,
+            line2field2,
+        } = fields;
         const { var1, var2, value1, value2, operator } = this;
         return (
             (
-                (f00 === var1 && f01 == value1 && f10 === var2 && f11 == value2) ||
-                (f00 === var2 && f01 == value2 && f10 === var1 && f11 == value1)
+                (line0field0 === var1 && line0field1 == value1 && line1field0 === var2 && line1field1 == value2) ||
+                (line0field0 === var2 && line0field1 == value2 && line1field0 === var1 && line1field1 == value1)
             ) && 
             (
-                (f20 === var1 && f22 === var2) || 
-                (f20 === var2 && f22 === var1)
+                (line2field0 === var1 && line2field2 === var2) || 
+                (line2field0 === var2 && line2field2 === var1)
             ) &&
-            f21 === operator
+            line2field1 === operator
         );
     }
 
-    renderPromptArea = () => {
+    buildPromptArea = () => {
         return (
             <div>
                 Create two variables, {inlineCode(this.var1)} and {inlineCode(this.var2)}, and assign them the values {inlineCode(this.value1)} and {inlineCode(this.value2)}, respectively. Then use their names to add them together.
@@ -91,32 +121,95 @@ export class AssignUseTwoVariablesExercise {
         )
     }
 
-    renderWorkArea = (fields, changeFieldFunction) => {
+    buildWorkArea = (fields, changeFieldFunction) => {
         const lines = [
             "var ***** = ****",
             "var ***** = ****",
             "var sum = ***** *** ******",
         ];
 
-        return (
-            <div>
-                {buildWorkLines(lines, fields, changeFieldFunction)}
-                {/* {exerciseInputLine(<div>var {field("f1", fields.f1, changeFieldFunction)} = {field("f2", fields.f2, changeFieldFunction, "input-small")};</div>)}
-                {exerciseInputLine(<div>var {field("f3", fields.f3, changeFieldFunction)} = {field("f4", fields.f4, changeFieldFunction, "input-small")};</div>)}
-                {exerciseInputLine(<div>var sum = {field("f5", fields.f5, changeFieldFunction)} {field("f6", fields.f6, changeFieldFunction, "input-micro")} {field("f7", fields.f7, changeFieldFunction)};</div>)} */}
-            </div>
-        )
+        return buildWorkLines(lines, fields, changeFieldFunction);
     }
 }
 
-export const testExerciseData = {
+export class SimpleOperatorExercise {
+    constructor() {
+        //Calculate "[[var1]] plus [[number1]]" and assign the result to "sum".
+        //Calculate "[[var1]] minus [[number1]]" and assign the result to "difference".
+        //Calculate "[[var1]] times [[number1]]" and assign the result to "product".
+        //Calculate "[[var1]] divided by [[number1]]" and assign the result to "quotient".
+        //Calculate the remainder of [[var1]] divided by [[number1]] and assign the result to "remainder".
+        this.variable = getRandomFromArray(numberVariables);
+        this.number = getRandomNumber();
+        this.operation = getRandomFromArray(operations);
+    }
 
+    checkAnswers = fields => fields.line0field0 === this.operation.resultWord &&  fields.line0field1 === this.operation.symbol;
+
+    buildPromptArea = () => {
+        return (
+            <div>
+                Calculate "{this.operation.buildPhrase(this.variable, this.number)}" and assign the result to {inlineCode(this.operation.resultWord)}.
+            </div>
+        )
+    }
+
+    buildWorkArea = (fields, changeFieldFunction) => {
+        const lines = [ `var ***** = ${this.variable} *** ${this.number}` ];
+        return buildWorkLines(lines, fields, changeFieldFunction);
+    }
+}
+
+export class SimpleAssignmentOperatorExercise {
+    constructor() {
+        this.variable = getRandomFromArray(numberVariables);
+        this.number = getRandomNumber();
+        this.operation = getRandomFromArray(operations);
+    }
+
+    checkAnswers = fields => fields.line0field0 === `${this.operation.symbol}=`;
+
+    buildPromptArea = () => {
+        return (
+            <div>
+                Use the correct operator to calculate {this.operation.buildPhrase(this.variable, this.number)} and immediately assign the result to {inlineCode(this.variable)}.
+            </div>
+        )
+    }
+
+    buildWorkArea = (fields, changeFieldFunction) => {
+        const lines = [ `${this.variable} *** ${this.number}` ];
+        return buildWorkLines(lines, fields, changeFieldFunction);
+    }
 }
 
 export const exerciseClasses = [
     AssignSingleVariableExercise, 
     AssignUseTwoVariablesExercise,
+    SimpleOperatorExercise,
+    SimpleAssignmentOperatorExercise,
 ];
+
+export const chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.random() * exerciseClasses.length)]();
+
+// export class EXERCISE_TEMPLATE {
+//     constructor() {
+
+//     }
+
+//     checkAnswers = fields => {}
+
+//     buildPromptArea = () => {
+//         return (
+//             <div></div>
+//         )
+//     }
+
+//     buildWorkArea = (fields, changeFieldFunction) => {
+//         const lines = [ "" ];
+//         return buildWorkLines(lines, fields, changeFieldFunction);
+//     }
+// }
 
 //vvvv old data structure
 // export const exerciseTypes = [

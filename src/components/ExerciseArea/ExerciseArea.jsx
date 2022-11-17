@@ -9,10 +9,10 @@ class ExerciseArea extends React.Component {
         return (
             <div>
                 <div className="exercise-prompt-container">
-                    {exercise.renderPromptArea()}
+                    {exercise.buildPromptArea()}
                 </div>
                 <div className="exercise-work-container">
-                    {exercise.renderWorkArea(fields, changeFieldFunction)}
+                    {exercise.buildWorkArea(fields, changeFieldFunction)}
                 </div>
             </div>
         )
