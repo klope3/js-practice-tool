@@ -49,14 +49,14 @@ const operations = [
 ];
 
 const inlineCode = text => <span className="code-inline">{text}</span>
-const simpleFieldCheck = (fields, answers) => {
-    if (Object.keys(fields).length === 0) return false;
-    for (let key in fields) {
-        console.log("Comparing " + fields[key] + " with " + answers[key]);
-        if (fields[key] != answers[key]) return false;
-    }
-    return true;
-}
+// const simpleFieldCheck = (fields, answers) => {
+//     if (Object.keys(fields).length === 0) return false;
+//     for (let key in fields) {
+//         console.log("Comparing " + fields[key] + " with " + answers[key]);
+//         if (fields[key] != answers[key]) return false;
+//     }
+//     return true;
+// }
 
 export class AssignSingleVariableExercise {
     constructor() {
@@ -134,11 +134,6 @@ export class AssignUseTwoVariablesExercise {
 
 export class SimpleOperatorExercise {
     constructor() {
-        //Calculate "[[var1]] plus [[number1]]" and assign the result to "sum".
-        //Calculate "[[var1]] minus [[number1]]" and assign the result to "difference".
-        //Calculate "[[var1]] times [[number1]]" and assign the result to "product".
-        //Calculate "[[var1]] divided by [[number1]]" and assign the result to "quotient".
-        //Calculate the remainder of [[var1]] divided by [[number1]] and assign the result to "remainder".
         this.variable = getRandomFromArray(numberVariables);
         this.number = getRandomNumber();
         this.operation = getRandomFromArray(operations);
@@ -183,11 +178,55 @@ export class SimpleAssignmentOperatorExercise {
     }
 }
 
+export class ObjectPropertiesExercise {
+    constructor() {
+        this.propertyName1 = getRandomFromArray(numberVariables);
+        this.propertyName2 = getRandomFromArray(numberVariables);
+        this.propertyValue1 = getRandomNumber();
+        this.propertyValue2 = getRandomNumber();
+    }
+
+    checkAnswers = fields => {
+        const {
+            propertyName1,
+            propertyName2,
+            propertyValue1,
+            propertyValue2,
+        } = this;
+        const reg1 = new RegExp(`^${propertyName1}:\\s?${propertyValue1},$`);
+        const reg2 = new RegExp(`^${propertyName2}:\\s?${propertyValue2},?$`);
+        return fields.line0field0 === "myObject" && fields.line1field0.match(reg1) && fields.line2field0.match(reg2);
+    }
+
+    buildPromptArea = () => {
+        return (
+            <div>
+                Create an object {inlineCode("myObject")} with the following properties.
+                <ul>
+                    <li>{inlineCode(this.propertyName1)} with the value {inlineCode(this.propertyValue1)}.</li>
+                    <li>{inlineCode(this.propertyName2)} with the value {inlineCode(this.propertyValue2)}.</li>
+                </ul>
+            </div>
+        )
+    }
+
+    buildWorkArea = (fields, changeFieldFunction) => {
+        const lines = [ 
+            "const ***** = {",
+            ">>>******",
+            ">>>******",
+            "}",
+        ];
+        return buildWorkLines(lines, fields, changeFieldFunction);
+    }
+}
+
 export const exerciseClasses = [
-    AssignSingleVariableExercise, 
-    AssignUseTwoVariablesExercise,
-    SimpleOperatorExercise,
-    SimpleAssignmentOperatorExercise,
+    // AssignSingleVariableExercise, 
+    // AssignUseTwoVariablesExercise,
+    // SimpleOperatorExercise,
+    // SimpleAssignmentOperatorExercise,
+    ObjectPropertiesExercise,
 ];
 
 export const chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.random() * exerciseClasses.length)]();
@@ -196,6 +235,8 @@ export const chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.ra
 //     constructor() {
 
 //     }
+
+//     static getMetadata = () => {}
 
 //     checkAnswers = fields => {}
 

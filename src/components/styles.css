@@ -4,6 +4,8 @@
 
     --code-editor-bg: rgb(36, 36, 36);
     --code-editor-text-base: rgb(190, 190, 190);
+
+    --code-tab-size: 40px;
 }
 
 .main {
@@ -20,7 +22,11 @@
 
 input {
     width: 160px;
-    text-align: center;
+    /* text-align: center; */
+}
+
+.input-long {
+    width: 270px;
 }
 
 .input-small {

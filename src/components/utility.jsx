@@ -18,18 +18,23 @@
 // }
 
 export const buildWorkLines = (lines, fields, changeFieldFunction) => {
+    //LOTS OF REFACTORING NEEDED
     console.log("received: ");
     console.log(fields);
     return lines.map((line, lineIndex) => {
-        const chunks = line.split(/(\*{3,})/g);
+        let indentClass;
+        if (line.startsWith(">>>")) indentClass = `indent-${line.match(/>>>/g).length}`;
+        const cleaned = line.replace(/>/g, "");
+        const chunks = cleaned.split(/(\*{3,})/g);
         let fieldCounter = 0;
         return (
-            <div key={lineIndex} className="exercise-input-line">
+            <div key={lineIndex} className={`exercise-input-line ${indentClass}`}>
                 {chunks.map((chunk, chunkIndex) => {
                     if (chunk.startsWith("***")) {
                         let className;
                         if (chunk === "***") className = "input-micro";
                         if (chunk === "****") className = "input-small";
+                        if (chunk.length > 5) className = "input-long";
                         const fieldName = `line${lineIndex}field${fieldCounter++}`;
                         return <input key={chunkIndex} className={className} type="text" name={fieldName} value={fields[fieldName] || ""} onChange={changeFieldFunction} /> 
                     } 

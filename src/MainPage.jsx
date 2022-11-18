@@ -56,15 +56,12 @@ class MainPage extends React.Component {
     }
 
     randomizeExercise = () => {
-        console.log("randomizing");
         this.setState(prevState => ({
             ...prevState,
             exercise: chooseRandomExercise(),
             fields: {},
             correctAnswer: undefined,
         }));
-        console.log("Fields is now: ");
-        console.log(this.state.fields);
     }
 
     render() {

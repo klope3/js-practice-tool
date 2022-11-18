@@ -20,3 +20,15 @@
 .exercise-input-line {
     margin: 4px 0;
 }
+
+.indent-1 {
+    margin-left: var(--code-tab-size);
+}
+
+.indent-2 {
+    margin-left: calc(var(--code-tab-size) * 2);
+}
+
+.indent-3 {
+    margin-left: calc(var(--code-tab-size) * 3);
+}
