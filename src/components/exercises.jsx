@@ -201,7 +201,8 @@ export class StringMethodsExercise {
         this.info = {
             strToReplace: name === "replace" ? getRandomLetter() : undefined,
             replacementStr: name === "replace" ? getRandomLetter() : undefined,
-            strToCheck: name === "startsWith" || name === "endsWith" ? getRandomLetter() : undefined,
+            strToCheck: name === "startsWith" || name === "endsWith" || name === "indexOf" ? getRandomLetter() : undefined,
+            count: name === "repeat" ? getRandomNumber(1, 10) : undefined,
         }
     }
 

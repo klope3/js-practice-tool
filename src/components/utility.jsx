@@ -64,7 +64,7 @@ export const getOrdinal = number => {
 
 export const getRandomFromArray = array => array && array.length > 0 ? array[Math.floor(Math.random() * array.length)] : undefined;
 //^^^NEEDS the ability to exclude some values. Otherwise exercises can ask you to make 2 variables with same name.
-export const getRandomNumber = () => Math.floor(Math.random() * 100);
+export const getRandomNumber = (min = 0, max = 100) => Math.floor(Math.random() * (max - min) + min);
 export const getRandomLetter = () => alphabet[Math.floor(Math.random() * alphabet.length)];
 // export const buildWorkLines = (lines, fieldValues, changeFieldFunction) => {
 //     return lines.map((line, index) => singleWorkLine(line, index, fieldValues, changeFieldFunction));
