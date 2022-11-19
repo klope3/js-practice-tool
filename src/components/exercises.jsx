@@ -1,62 +1,7 @@
-import { buildWorkLines, getRandomFromArray, getRandomNumber } from "./utility";
+import { buildWorkLines, getOrdinal, getRandomFromArray, getRandomLetter, getRandomNumber, inlineCode } from "./utility";
+import { numberVariables, pangramSentences, stringMethods, operations } from "./constants";
 
-const numberVariables = [
-    "apples",
-    "oranges",
-    "cars",
-    "bikes",
-    "items",
-    "units",
-    "marbles",
-    "itemCount",
-    "friendCount",
-    "messageCount",
-    "index",
-    "edgeCount",
-];
 
-const operations = [
-    {
-        symbol: "+",
-        resultWord: "sum",
-        doCalculation: (num1, num2) => num1 + num2,
-        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} plus {inlineCode(str2)}</span>,
-    },
-    {
-        symbol: "-",
-        resultWord: "difference",
-        doCalculation: (num1, num2) => num1 - num2,
-        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} minus {inlineCode(str2)}</span>,
-    },
-    {
-        symbol: "*",
-        resultWord: "product",
-        doCalculation: (num1, num2) => num1 * num2,
-        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} times {inlineCode(str2)}</span>,
-    },
-    {
-        symbol: "/",
-        resultWord: "quotient",
-        doCalculation: (num1, num2) => num1 / num2,
-        buildPhrase: (str1, str2) => <span>{inlineCode(str1)} divided by {inlineCode(str2)}</span>,
-    },
-    {
-        symbol: "%",
-        resultWord: "remainder",
-        doCalculation: (num1, num2) => num1 % num2,
-        buildPhrase: (str1, str2) => <span>the remainder of {inlineCode(str1)} divided by {inlineCode(str2)}</span>,
-    },
-];
-
-const inlineCode = text => <span className="code-inline">{text}</span>
-// const simpleFieldCheck = (fields, answers) => {
-//     if (Object.keys(fields).length === 0) return false;
-//     for (let key in fields) {
-//         console.log("Comparing " + fields[key] + " with " + answers[key]);
-//         if (fields[key] != answers[key]) return false;
-//     }
-//     return true;
-// }
 
 export class AssignSingleVariableExercise {
     constructor() {
@@ -221,12 +166,70 @@ export class ObjectPropertiesExercise {
     }
 }
 
+export class SimpleArrayExercise {
+    constructor() {
+        this.getting = Math.random() > 0.5;
+        this.index = getRandomNumber();
+        this.value = getRandomNumber();
+    }
+
+    checkAnswers = fields => {
+        const accessStr = `nums[${this.index}]`;
+        if (this.getting) return fields.line0field0 === "x" && fields.line0field1 === accessStr;
+        else return fields.line0field0 === accessStr && fields.line0field1 == this.value;
+    }
+
+    buildPromptArea = () => {
+        return this.getting ? 
+            <div>Get the {getOrdinal(this.index + 1)} value in the {inlineCode("nums")} array and assign it to {inlineCode("x")}.</div> :
+            <div>Set the {getOrdinal(this.index + 1)} value of the {inlineCode("nums")} array to {inlineCode(this.value)}.</div>
+    }
+
+    buildWorkArea = (fields, changeFieldFunction) => {
+        const lines = this.getting ? 
+            [ "const **** = *****" ] :
+            [ "***** = ***" ];
+        return buildWorkLines(lines, fields, changeFieldFunction);
+    }
+}
+
+export class StringMethodsExercise {
+    constructor() {
+        this.stringMethod = getRandomFromArray(stringMethods);
+        const { name } = this.stringMethod;
+        this.sentence = getRandomFromArray(pangramSentences);
+        this.info = {
+            strToReplace: name === "replace" ? getRandomLetter() : undefined,
+            replacementStr: name === "replace" ? getRandomLetter() : undefined,
+            strToCheck: name === "startsWith" || name === "endsWith" ? getRandomLetter() : undefined,
+        }
+    }
+
+    checkAnswers = fields => this.stringMethod.checkAnswers(fields, this.info);
+
+    buildPromptArea = () => {
+        return (
+            <div>Use a string method to {this.stringMethod.buildActionText(this.info)}.</div>
+        )
+    }
+
+    buildWorkArea = (fields, changeFieldFunction) => {
+        const lines = [ 
+            `const str = "${this.sentence}."`,
+            this.stringMethod.workLineStr 
+        ];
+        return buildWorkLines(lines, fields, changeFieldFunction);
+    }
+}
+
 export const exerciseClasses = [
     // AssignSingleVariableExercise, 
     // AssignUseTwoVariablesExercise,
     // SimpleOperatorExercise,
     // SimpleAssignmentOperatorExercise,
-    ObjectPropertiesExercise,
+    // ObjectPropertiesExercise,
+    // SimpleArrayExercise,
+    StringMethodsExercise,
 ];
 
 export const chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.random() * exerciseClasses.length)]();
@@ -251,49 +254,3 @@ export const chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.ra
 //         return buildWorkLines(lines, fields, changeFieldFunction);
 //     }
 // }
-
-//vvvv old data structure
-// export const exerciseTypes = [
-//     {
-//         name: "Assign Single Variable",
-//         topics: ["Variables"],
-//         render: () => {
-//             return (
-//                 <div>
-//                     <div className="exercise-instruction-text">
-//                         Create a variable <span className="code-inline">num</span> and assign it the value <span className="code-inline">15</span>.
-//                     </div>
-//                     <div className="exercise-code-area">
-//                         <div className="exercise-input-line">
-//                             var <input type="text" size={inputFieldSmallSize} /> = <input type="text" size={inputFieldTinySize} />
-//                         </div>
-//                     </div>
-//                 </div>
-//             )
-//         }
-//     },
-//     {
-//         name: "Assign and Use Two Variables",
-//         topics: ["Variables", "Operators"],
-//         render: () => {
-//             return (
-//                 <div>
-//                     <div className="exercise-instruction-text">
-//                         Create two variables, <span className="code-inline">apples</span> and <span className="code-inline">oranges</span>, and assign them the values <span className="code-inline">14</span> and <span className="code-inline">64</span>, respectively. Then use their names to add them together.
-//                     </div>
-//                     <div className="exercise-code-area">
-//                         <div className="exercise-input-line">
-//                             var <input type="text" size={inputFieldSmallSize} /> = <input type="text" size={inputFieldTinySize} />;
-//                         </div>
-//                         <div className="exercise-input-line">
-//                             var <input type="text" size={inputFieldSmallSize} /> = <input type="text" size={inputFieldTinySize} />;
-//                         </div>
-//                         <div className="exercise-input-line">
-//                             var sum = <input type="text" size={inputFieldTinySize} /> <input type="text" size={inputFieldMicroSize} /> <input type="text" size={inputFieldTinySize} />;
-//                         </div>
-//                     </div>
-//                 </div>
-//             )
-//         }
-//     }
-// ];
