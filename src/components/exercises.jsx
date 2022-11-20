@@ -1,7 +1,5 @@
 import { buildWorkLines, getOrdinal, getRandomFromArray, getRandomLetter, getRandomNumber, inlineCode } from "./utility";
-import { numberVariables, pangramSentences, stringMethods, operations } from "./constants";
-
-
+import { numberVariables, pangramSentences, stringMethods, operations, arrayMethods, wordArrays } from "./constants";
 
 export class AssignSingleVariableExercise {
     constructor() {
@@ -223,14 +221,52 @@ export class StringMethodsExercise {
     }
 }
 
+export class ArrayMethodsExercise {
+    constructor() {
+        this.arrayMethod = getRandomFromArray(arrayMethods);
+        const randArray = getRandomFromArray(wordArrays);
+        this.array = new Array(...randArray);
+        const removed = this.array.splice(6, this.array.length - 6);
+        const { name } = this.arrayMethod;
+        this.info = {
+            startIndex: name === "slice" ?  getRandomNumber(0, 4) : undefined,
+            count: name === "slice" ?  getRandomNumber(2, 5) : undefined,
+            arrLength: this.array.length,
+            newItem: getRandomFromArray(removed),
+            checkElement: getRandomFromArray(randArray),
+        }
+    }
+
+    checkAnswers = fields => this.arrayMethod.checkAnswers(fields, this.info);
+
+    buildPromptArea = () => {
+        return (
+            <div>Use an array method to {this.arrayMethod.buildActionText(this.info)}.</div>
+        )
+    }
+
+    buildWorkArea = (fields, changeFieldFunction) => {
+        const { array } = this;
+        const elementStrings = array.map(item => `>>>"${item}",`);
+        const lines = [ 
+            `const arr = [`,
+            `];`,
+            this.arrayMethod.workLineStr,
+        ];
+        lines.splice(1, 0, ...elementStrings);
+        return buildWorkLines(lines, fields, changeFieldFunction);
+    }
+}
+
 export const exerciseClasses = [
-    // AssignSingleVariableExercise, 
-    // AssignUseTwoVariablesExercise,
-    // SimpleOperatorExercise,
-    // SimpleAssignmentOperatorExercise,
-    // ObjectPropertiesExercise,
-    // SimpleArrayExercise,
+    AssignSingleVariableExercise, 
+    AssignUseTwoVariablesExercise,
+    SimpleOperatorExercise,
+    SimpleAssignmentOperatorExercise,
+    ObjectPropertiesExercise,
+    SimpleArrayExercise,
     StringMethodsExercise,
+    ArrayMethodsExercise,
 ];
 
 export const chooseRandomExercise = () => new exerciseClasses[Math.floor(Math.random() * exerciseClasses.length)]();

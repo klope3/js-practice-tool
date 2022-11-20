@@ -1,4 +1,4 @@
-import { inlineCode } from "./utility";
+import { getRandomFromArray, inlineCode } from "./utility";
 
 export const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -31,6 +31,12 @@ export const pangramSentences = [
     "A quick brown fox jumps over the lazy dog",
 ];
 
+export const wordArrays = [
+    ["Apple", "Orange", "Lime", "Lemon", "Pineapple", "Plum", "Strawberry", "Blueberry", "Watermelon", "Peach", "Apricot", "Papaya"],
+    ["Ford", "Pontiac", "Toyota", "Chevrolet", "Hyundai", "Mazda", "Subaru", "Honda", "BMW", "Nissan", "Mercedes-Benz", "Volkswagen"],
+    ["Kenya", "Canada", "United States", "Germany", "South Korea", "Australia", "Norway", "Brazil", "Mexico", "France", "Ghana"],
+];
+
 export const operations = [
     {
         symbol: "+",
@@ -61,6 +67,69 @@ export const operations = [
         resultWord: "remainder",
         doCalculation: (num1, num2) => num1 % num2,
         buildPhrase: (str1, str2) => <span>the remainder of {inlineCode(str1)} divided by {inlineCode(str2)}</span>,
+    },
+];
+
+export const arrayMethods = [
+    {
+        name: "push",
+        buildActionText: info => <span>add the element {inlineCode(`"${info.newItem}"`)} to the end of the array</span>,
+        workLineStr: "****.*****(*****);",
+        checkAnswers: (fields, info) => {
+            const lineStr = `line${info.arrLength + 2}`;
+            const regExp = new RegExp(`^("${info.newItem}"|'${info.newItem}')$`);
+            return fields[`${lineStr}field0`] === "arr" && fields[`${lineStr}field1`] === "push" && fields[`${lineStr}field2`].match(regExp);
+        },
+    },
+    {
+        name: "pop",
+        buildActionText: info => <span>remove the last element from the array</span>,
+        workLineStr: "const removedElement = ****.*****()",
+        checkAnswers: (fields, info) => {
+            const lineStr = `line${info.arrLength + 2}`;
+            return fields[`${lineStr}field0`] === "arr" && fields[`${lineStr}field1`] === "pop";
+        },
+    },
+    {
+        name: "sort",
+        buildActionText: info => <span>sort the array alphabetically</span>,
+        workLineStr: "****.*****();",
+        checkAnswers: (fields, info) => {
+            const lineStr = `line${info.arrLength + 2}`;
+            return fields[`${lineStr}field0`] === "arr" && fields[`${lineStr}field1`] === "sort";
+        },
+    },
+    {
+        name: "slice",
+        buildActionText: info => {
+            return <span>get a new array containing {info.count} elements of the given array, starting at index {info.startIndex}</span>
+        },
+        workLineStr: "const elements = *****.*****(*****);",
+        checkAnswers: (fields, info) => {
+            const lineStr = `line${info.arrLength + 2}`;
+            const endIndex = info.startIndex + info.count;
+            const regExp = new RegExp(`^${info.startIndex},\\s?${endIndex}$`);
+            return fields[`${lineStr}field0`] === "arr" && fields[`${lineStr}field1`] === "slice" && fields[`${lineStr}field2`].match(regExp);
+        },
+    },
+    {
+        name: "join",
+        buildActionText: info => <span>combine all elements of the array into one string</span>,
+        workLineStr: "const joined = ****.*****();",
+        checkAnswers: (fields, info) => {
+            const lineStr = `line${info.arrLength + 2}`;
+            return fields[`${lineStr}field0`] === "arr" && fields[`${lineStr}field1`] === "join";
+        },
+    },
+    {
+        name: "includes",
+        buildActionText: info => <span>check if the array has the element {inlineCode(`"${info.checkElement}"`)}</span>,
+        workLineStr: "const hasElement = ****.*****(*****);",
+        checkAnswers: (fields, info) => {
+            const lineStr = `line${info.arrLength + 2}`;
+            const regExp = new RegExp(`("${info.checkElement}"|'${info.checkElement}')`);
+            return fields[`${lineStr}field0`] === "arr" && fields[`${lineStr}field1`] === "includes" && fields[`${lineStr}field2`].match(regExp);
+        },
     },
 ];
 

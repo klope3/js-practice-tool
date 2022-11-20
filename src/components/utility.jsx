@@ -38,7 +38,7 @@ export const buildWorkLines = (lines, fields, changeFieldFunction) => {
                         if (chunk === "****") className = "input-small";
                         if (chunk.length > 5) className = "input-long";
                         const fieldName = `line${lineIndex}field${fieldCounter++}`;
-                        return <input key={chunkIndex} className={className} type="text" name={fieldName} value={fields[fieldName] || ""} onChange={changeFieldFunction} /> 
+                        return <input key={chunkIndex} className={className} type="text" name={fieldName} value={fields[fieldName] || ""} onChange={changeFieldFunction} autoComplete="off" /> 
                     } 
                     return <span key={chunkIndex}>{chunk}</span>;
                 })}
